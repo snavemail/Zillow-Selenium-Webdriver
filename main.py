@@ -11,9 +11,13 @@ options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option("useAutomationExtension", False)
 options.add_experimental_option("detach", True)
 
+# Fill in chrome driver path 
 CHROME_DRIVER_PATH = "C:\Development\chromedriver.exe"
+
+# Google sheets form that is automatically filled in by selenium
 GOOGLE_SHEETS = "https://forms.gle/Nrnn8JcrSQAvMy3L6"
 
+# Site to find apartments on
 ZILLOW = "https://www.zillow.com/brooklyn-new-york-ny/rentals/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22mapBounds%22%3A%7B%22north%22%3A43.18435549759412%2C%22east%22%3A-69.25950652343751%2C%22south%22%3A39.75281661400167%2C%22west%22%3A-75.68650847656251%7D%2C%22mapZoom%22%3A8%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22price%22%3A%7B%22min%22%3A350089%7D%2C%22beds%22%3A%7B%22min%22%3A1%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22mp%22%3A%7B%22min%22%3A1800%7D%2C%22auc%22%3A%7B%22value%22%3Afalse%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fr%22%3A%7B%22value%22%3Atrue%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A37607%2C%22regionType%22%3A17%7D%2C%7B%22regionId%22%3A44269%2C%22regionType%22%3A6%7D%5D%7D"
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 "
@@ -26,9 +30,16 @@ zillow_webpage = response.text
 soup = BeautifulSoup(zillow_webpage, "html.parser")
 apartments = soup.find_all(name="div", class_="StyledCard-c11n-8-73-8__sc-rmiu6p-0")
 
+# Empty Price List
 price_list = []
+
+# Empty Link List
 link_list = []
+
+# Empty Address List
 address_list = []
+
+
 for apartment in apartments:
     # For the price
     if "+" in apartment.select("div div span")[0].getText():
@@ -49,17 +60,12 @@ for apartment in apartments:
     link_list.append(link)
     address_list.append(address)
 
-print(price_list)
-print(link_list)
-print(address_list)
-
+# print(price_list)
+# print(link_list)
+# print(address_list)
 
 service = ChromeService(executable_path=CHROME_DRIVER_PATH)
 driver = webdriver.Chrome(service=service, options=options)
-
-
-
-
 
 for i in range(len(address_list)):
     driver.get(GOOGLE_SHEETS)
